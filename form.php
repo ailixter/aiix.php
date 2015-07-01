@@ -90,9 +90,13 @@ class AIIXForm extends AIIXData
         return addcslashes(self::data($path), "\0..\37\'\"");
     }
 
-    public static function controls ($iscontrol = null) {
-        return array_filter(self::data(), $iscontrol ?//???
-            $iscontrol : array(__class__, 'isControl'));
+    public static function controls ($callback = null) {
+        return array_filter(self::data(), $callback ? //???
+            $callback : array(__class__, 'isControl'));
+    }
+
+    public static function controlIDs ($callback = null) {
+        return array_keys(self::controls($callback));
     }
 
     /**
@@ -106,7 +110,28 @@ class AIIXForm extends AIIXData
      * @return bool
      */
     public static function isControl ($attrs) {
-        return isset($attrs['-control']) && empty($attrs['-dont-enumerate']);
+        return isset($attrs['-control'])
+            && empty($attrs['-dont-enumerate']);
+    }
+
+    public static function fieldset ($fset, $callback = null) {
+        $callback or $callback = array(__class__, 'isFieldset');
+        $result = array();
+        foreach (self::data() as $id => $attrs) {
+            call_user_func($callback, $attrs, $fset)
+                and $result[$id] = $attrs;
+        }
+        return $result;
+    }
+
+    public static function fieldsetIDs ($fset, $callback = null) {
+        return array_keys(self::fieldset($fset, $callback));
+    }
+
+    public static function isFieldset ($attrs, $fset) {
+        return self::isControl($attrs)
+            && isset($attrs['-fieldset'])
+            && $attrs['-fieldset'] === $fset;
     }
 
     /**
@@ -127,7 +152,7 @@ class AIIXForm extends AIIXData
         and array_unshift($suffix, $attrs['-suffix']);
         $attrs['-suffix'] = $suffix = join('/', array_filter($suffix,'strlen'));
         isset($attrs['id'])    or $attrs['id']    = $id;
-        isset($attrs['name'])  or $attrs['name']  = $id;
+        isset($attrs['name'])  or $attrs['name']  = $attrs['id'];
         isset($attrs['-path']) or $attrs['-path'] = join('/',
                                   array_filter(array($attrs['name'], $suffix),'strlen'));
         return $attrs;
@@ -153,8 +178,22 @@ class AIIXForm extends AIIXData
         ));
     }
 
+    /**
+     *
+     * @return bool
+     */
     public static function submitted () {
         return self::$form->accept(null);
+    }
+    /**
+     *
+     * @param mixed $mix
+     * @return string
+     */
+    public static function filtered ($mix = null) {
+        return isset($mix) ?
+            self::$form->filter(self::attrs($mix)) :
+            self::$form->filtered;
     }
 
     protected function filter ($attrs) {
@@ -251,20 +290,28 @@ class AIIXForm extends AIIXData
         return $result;
     }
 
+    public static function validateAll ($ids, $controller = null) {
+        $failed = 0;
+        foreach ($ids as $id) {
+            AIIXForm::validate($id, $controller) or ++$failed;
+        }
+        return !$failed;
+    }
+
     public static function validate ($id, $controller = null, $force = null) {
         $attrs = self::attrs($id);
-        if (!self::checkFailed($path = $attrs['-path'])) return false;
-        $methods = $force ? $force : self::take($attrs, '-validate');
-        if (!$methods) return true;
-        is_scalar($methods) and $methods = array($methods => null);
+        if (!self::checkFailed($path = $attrs['-path'])) return false;//FIX logic
         $filtered = self::$form->filter($attrs);
-        foreach ($methods as $method => $args) {
-            $method = 'validate_'.strtr($method, '.-', '__');
-            if (is_callable($callback = array($controller, $method))) {
-                self::callValidator($callback, $path, $filtered, $args);
-            }
-            if (is_callable($callback = array(self::$form, $method))) {
-                self::callValidator($callback, $path, $filtered, $args);
+        if (($methods = $force ? $force : self::take($attrs, '-validate'))) {
+            is_scalar($methods) and $methods = array($methods => null);
+            foreach ($methods as $method => $args) {
+                $method = 'validate_'.strtr($method, '.-', '__');
+                if (is_callable($callback = array($controller, $method))) {
+                    self::callValidator($callback, $path, $filtered, $args);
+                }
+                if (is_callable($callback = array(self::$form, $method))) {
+                    self::callValidator($callback, $path, $filtered, $args);
+                }
             }
         }
         return self::checkFailed($path);
@@ -456,7 +503,6 @@ class AIIXForm extends AIIXData
     }
 
     public static function file ($attrs) {
-        //???self::readInput($attrs, $attrs['value']);
         $attrs['type'] = 'file';
         return self::tag('input', $attrs);
     }
@@ -469,7 +515,7 @@ class AIIXForm extends AIIXData
 
     public static function checkbox ($attrs) {
         $input = null;
-        if (self::readInput($attrs, $input)) {
+        if (self::readInput($attrs, $input) and !is_null($input)) {
             if (!strlen($input)) {
                 unset($attrs['checked']);
             }
