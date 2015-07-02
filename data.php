@@ -207,7 +207,7 @@ class AIIXData extends AIIXObject
      * @return type
      */
     public static function required ($array, $key) {
-        assert('isset($array[$key])');
+        assert("isset(\$array['$key'])");
         return $array[$key];
     }
 

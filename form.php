@@ -291,7 +291,7 @@ class AIIXForm extends AIIXData
     }
 
     public static function validateAll ($ids, $controller = null) {
-        $failed = 0;
+        $failed = 0;//TODO use alerted() ???
         foreach ($ids as $id) {
             AIIXForm::validate($id, $controller) or ++$failed;
         }
@@ -300,7 +300,7 @@ class AIIXForm extends AIIXData
 
     public static function validate ($id, $controller = null, $force = null) {
         $attrs = self::attrs($id);
-        if (!self::checkFailed($path = $attrs['-path'])) return false;//FIX logic
+        if (self::alerted($path = $attrs['-path'])) return false;//FIX logic
         $filtered = self::$form->filter($attrs);
         if (($methods = $force ? $force : self::take($attrs, '-validate'))) {
             is_scalar($methods) and $methods = array($methods => null);
@@ -314,7 +314,7 @@ class AIIXForm extends AIIXData
                 }
             }
         }
-        return self::checkFailed($path);
+        return !self::alerted($path);
     }
 
     private static function callValidator ($callback, $path, &$filtered, $args) {
@@ -326,9 +326,8 @@ class AIIXForm extends AIIXData
         }
     }
 
-    private static function checkFailed ($path) {
-        $alerted = self::$form->alerted->get($path);
-        return !is_scalar($alerted) ? !count($alerted) : empty($alerted);
+    public static function alerted ($path=null) {
+        return count(self::$form->alerted->get($path));
     }
 
     public static function msgIfFalse ($result, $path, $error, $idx=null) {
