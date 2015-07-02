@@ -114,24 +114,19 @@ class AIIXForm extends AIIXData
             && empty($attrs['-dont-enumerate']);
     }
 
-    public static function fieldset ($fset, $callback = null) {
-        $callback or $callback = array(__class__, 'isFieldset');
+    public static function fieldset ($fset) {
         $result = array();
-        foreach (self::data() as $id => $attrs) {
-            call_user_func($callback, $attrs, $fset)
-                and $result[$id] = $attrs;
+        foreach (self::fieldsetIDs($fset) as $id) {
+            $result[$id] = self::$form[$id];
         }
         return $result;
     }
 
-    public static function fieldsetIDs ($fset, $callback = null) {
-        return array_keys(self::fieldset($fset, $callback));
-    }
-
-    public static function isFieldset ($attrs, $fset) {
-        return self::isControl($attrs)
-            && isset($attrs['-fieldset'])
-            && $attrs['-fieldset'] === $fset;
+    public static function fieldsetIDs ($fset) {
+        $result = self::$form->get($fset);
+        is_array($result) or $result = array_map('trim',explode(',',$result));
+        ksort($result);
+        return $result;
     }
 
     /**
@@ -308,10 +303,10 @@ class AIIXForm extends AIIXData
                 $method = 'validate_'.strtr($method, '.-', '__');
                 if (is_callable($callback = array($controller, $method))) {
                     self::callValidator($callback, $path, $filtered, $args);
-                }
+                }//TODO else ???
                 if (is_callable($callback = array(self::$form, $method))) {
                     self::callValidator($callback, $path, $filtered, $args);
-                }
+                }//TODO else errror ???
             }
         }
         return !self::alerted($path);
