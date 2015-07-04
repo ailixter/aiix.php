@@ -14,6 +14,12 @@ class AIIXInput extends AIIXData
         if ($filter == FILTER_VALIDATE_BOOLEAN) settype($result, 'string');
         return $result;
     }
+
+    public function value ($path, $default=null,
+        $filter=FILTER_DEFAULT, $options=null)
+    {
+        return $this->filter($this->get($path, $default), $filter, $options);
+    }
 }
 
 class AIIXForm extends AIIXData
@@ -136,13 +142,16 @@ class AIIXForm extends AIIXData
     public static function attrs ($mix) {
         if (is_array($mix)) {
             $id = array_shift($mix);
-            $suffix = $mix;
+            $suffix = $mix
+            or $array = true;
         }
         else {
             $id = $mix;
             $suffix = array();
         }
-        $attrs = self::required(self::$form, $id);
+        $attrs = self::take(self::$form, $id, array());
+        isset($array) && !isset($attrs['-array'])
+        and $attrs['-array'] = true;
         isset($attrs['-suffix'])
         and array_unshift($suffix, $attrs['-suffix']);
         $attrs['-suffix'] = $suffix = join('/', array_filter($suffix,'strlen'));
