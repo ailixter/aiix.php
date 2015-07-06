@@ -130,7 +130,8 @@ class AIIXForm extends AIIXData
 
     public static function fieldsetIDs ($fset) {
         $result = self::$form->get($fset);
-        is_array($result) or $result = array_map('trim',explode(',',$result));
+        is_array($result) or $result = $result ? 
+            array_map('trim',explode(',',$result)) : array();
         ksort($result);
         return $result;
     }
