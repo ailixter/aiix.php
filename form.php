@@ -29,12 +29,14 @@ class AIIXForm extends AIIXData
               $CANCEL   = 'cancel',
               $DEFTYPE  = 'text';
 
+    /** @See requested(), filtered() and alerted(). */
     protected $input, $filtered, $alerted, $mod;
 
     /**
      *
      * <code>
-     * AIIXForm::choose(new MyAIIXForm($data, $input, '.ru');
+     * //   Construct and choose new form to use:
+     * AIIXForm::choose(new MyAIIXForm($data, new AIIXInput($_POST), '.ru');
      * </code>
      * @param array $data
      * @param AIIXInput $input
@@ -130,7 +132,7 @@ class AIIXForm extends AIIXData
 
     public static function fieldsetIDs ($fset) {
         $result = self::$form->get($fset);
-        is_array($result) or $result = $result ? 
+        is_array($result) or $result = $result ?
             array_map('trim',explode(',',$result)) : array();
         ksort($result);
         return $result;
@@ -254,6 +256,17 @@ class AIIXForm extends AIIXData
         var_dump(self::$form->input->data);
     }
 
+    /**
+     * It's ought to be named "input()", but the latter is already in use.
+     * @param type $mix
+     * @return type
+     */
+    public static function requested ($mix=null) {
+        return isset($mix) ?
+            self::$form->input->get($mix) :
+            self::$form->input;
+    }
+
     //---=====[ VALIDATION and ERROR HANDLING ]=====---//
 
     protected function checkError ($result, $path, $error, $idx=null) {
@@ -331,8 +344,18 @@ class AIIXForm extends AIIXData
         }
     }
 
-    public static function alerted ($path=null) {
-        return count(self::$form->alerted->get($path));
+    /**
+     *
+     * @param type $mix
+     * @param type $count
+     * @return mixed count(alerts) | alerts
+     */
+    public static function alerted ($mix=null, $count=true) {
+        $result = isset($mix) ?
+            self::$form->alerted->get($mix) :
+            self::$form->alerted;
+        $count and $result = count($result);
+        return $result;
     }
 
     public static function msgIfFalse ($result, $path, $error, $idx=null) {
