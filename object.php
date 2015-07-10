@@ -13,7 +13,7 @@ class AIIXObject
     }
     public function __set ($prop, $value) {
         return method_exists($this, $method = "set_$prop") ?
-            $this->$method() : $this->set_property($prop);
+            $this->$method() : $this->set_property($prop, $value);
     }
 
     protected function get_property ($prop) {
