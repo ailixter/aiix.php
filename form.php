@@ -29,8 +29,19 @@ class AIIXForm extends AIIXData
               $CANCEL   = 'cancel',
               $DEFTYPE  = 'text';
 
-    /** @See requested(), filtered() and alerted(). */
-    protected $input, $filtered, $alerted, $mod;
+
+    protected  $mod;
+    private $input, $output, $alerts;
+    /** <code>$var = AIIXForm::choose()->input->get('var'); </code>. */
+    protected function _get_input () {
+        return $this->input;
+    }
+    protected function _get_output () {
+        return $this->output;
+    }
+    protected function _get_alerts () {
+        return $this->alerts;
+    }
 
     /**
      *
@@ -48,8 +59,8 @@ class AIIXForm extends AIIXData
         $this->DEFTYPE  = self::extract($data, '-DEFTYPE',  $this->DEFTYPE);
         parent::__construct($data, true);
         $this->input    = $input;
-        $this->filtered = new AIIXData;
-        $this->alerted  = new AIIXData;
+        $this->output   = new AIIXData;
+        $this->alerts   = new AIIXData;
         $this->mod      = $mod;
     }
 
@@ -85,21 +96,12 @@ class AIIXForm extends AIIXData
         return self::$form;
     }
 
-    /**
-     *
-     * @param  mixed $path : string | (null) default (@see AIIXData::ref()).
-     * @return form data reference at path
-     */
-    protected static function &data ($path = null) {
-        return self::$form->ref($path);
-    }
-
     public static function cstr ($path = null) {
-        return addcslashes(self::data($path), "\0..\37\'\"");
+        return addcslashes(self::$form->get($path), "\0..\37\'\"");
     }
 
     public static function controls ($callback = null) {
-        return array_filter(self::data(), $callback ? //???
+        return array_filter(self::$form, $callback ? //???
             $callback : array(__class__, 'isControl'));
     }
 
@@ -200,12 +202,12 @@ class AIIXForm extends AIIXData
     public static function filtered ($mix = null) {
         return isset($mix) ?
             self::$form->filter(self::attrs($mix)) :
-            self::$form->filtered;
+            self::$form->output;
     }
 
     protected function filter ($attrs) {
         $path   = $attrs['-path'];
-        $result = $this->filtered->get($path, null);
+        $result = $this->output->get($path, null);
         if (!is_null($result)) {
             //  already filtered.
             return $result;
@@ -217,7 +219,7 @@ class AIIXForm extends AIIXData
         $filter = self::take($attrs, '-filter', FILTER_DEFAULT);
         if (!$filter) {
             //  no filter. the result as is.
-            $this->filtered->setref($path, $result);
+            $this->output->setref($path, $result);
             return $result;
         }
 
@@ -235,7 +237,7 @@ class AIIXForm extends AIIXData
             $this->checkError($result, $path, $fid, $fid);
         }
 
-        $this->filtered->setref($path, $result);
+        $this->output->setref($path, $result);
         return $result;
     }
 
@@ -271,7 +273,7 @@ class AIIXForm extends AIIXData
 
     protected function checkError ($result, $path, $error, $idx=null) {
         if ($result === false) {
-            $this->alerted->add($path, $error, $idx);
+            $this->alerts->add($path, $error, $idx);
             return 1;
         }
 
@@ -296,7 +298,7 @@ class AIIXForm extends AIIXData
     public static function message ($id) {
         $result = array();
         $attrs  = self::attrs($id);
-        if (!($alerts = self::$form->alerted->get($attrs['-path']))) return $result;
+        if (!($alerts = self::$form->alerts->get($attrs['-path']))) return $result;
         $messages = self::take($attrs, "-message".self::$form->mod);//TODO message pool ???
         foreach ((array)$alerts as $ekey => $err) {
             $msg = self::take($messages, $ekey, "{-label} $ekey ".print_r($err,1));//todo ??? method
@@ -352,8 +354,8 @@ class AIIXForm extends AIIXData
      */
     public static function alerted ($mix=null, $count=true) {
         $result = isset($mix) ?
-            self::$form->alerted->get($mix) :
-            self::$form->alerted;
+            self::$form->alerts->get($mix) :
+            self::$form->alerts;
         $count and $result = count($result);
         return $result;
     }
