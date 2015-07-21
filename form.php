@@ -101,7 +101,7 @@ class AIIXForm extends AIIXData
     }
 
     public static function controls ($callback = null) {
-        return array_filter(self::$form, $callback ? //???
+        return array_filter(self::$form->data, $callback ? //???
             $callback : array(__class__, 'isControl'));
     }
 
@@ -359,7 +359,14 @@ class AIIXForm extends AIIXData
         $count and $result = count($result);
         return $result;
     }
-
+    /**
+     *
+     * @param bool $result
+     * @param type $path
+     * @param type $error
+     * @param type $idx
+     * @return int - error count
+     */
     public static function msgIfFalse ($result, $path, $error, $idx=null) {
         return self::$form->checkError($result, $path, $error, $idx);
     }
@@ -427,6 +434,7 @@ class AIIXForm extends AIIXData
                     $val .= self::idSuffix($suffix);
                     break;
                 }
+                $val = str_replace('"', '&quot;', $val);
                 $result .= " $key=\"$val\"";
             }
         }
@@ -458,6 +466,7 @@ class AIIXForm extends AIIXData
 
     public static function label ($id) {
         $attrs  = self::attrs($id);
+        if (self::take($attrs, '-control') == 'hidden') return null;
         $id     = self::take($attrs, 'id');
         $suffix = self::take($attrs, '-suffix', '');
         $for    = $id.self::idSuffix($suffix);
