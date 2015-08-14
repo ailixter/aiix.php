@@ -546,7 +546,7 @@ class AIIXForm extends AIIXData
     }
 
     public static function textarea ($attrs) {
-        $text = self::extract($attrs, 'value');
+        $text = self::extract($attrs, '-value');
         self::readInput($attrs, $text);
         return self::tag('textarea', $attrs, (string)$text);
     }
