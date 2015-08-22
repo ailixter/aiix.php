@@ -3,7 +3,7 @@
 ```
 AIIXForm::create($formdata);
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 AIIXForm::control('firstname');
 ```
