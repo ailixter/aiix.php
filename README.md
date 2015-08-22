@@ -14,3 +14,5 @@ AIIXForm::create($formdata);
 AIIXForm::label('firstname');
 AIIXForm::control('firstname');
 ```
+
+more: https://github.com/ailixter/aiix.php/wiki
