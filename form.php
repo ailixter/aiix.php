@@ -170,9 +170,9 @@ class AIIXForm extends AIIXData
     //---=====[ INPUT ]=====---//
 
     protected static function readInput ($attrs, &$dst) {
-        $accepted = self::$form->accept($attrs)
-        and  $dst = self::$form->filter($attrs);
-        return !empty($accepted);
+        return $accepted = self::$form->accept($attrs)
+        and !is_null($value = self::$form->filter($attrs))
+        and $dst = $value;
     }
 
     /**
@@ -217,7 +217,7 @@ class AIIXForm extends AIIXData
         is_null($result) and $result = self::take($attrs, '-default');
 
         $filter = self::take($attrs, '-filter', FILTER_DEFAULT);
-        if (!$filter) {
+        if (!$filter || $filter === FILTER_DEFAULT && is_null($result)) {
             //  no filter. the result as is.
             $this->output->setref($path, $result);
             return $result;
@@ -546,22 +546,22 @@ class AIIXForm extends AIIXData
     }
 
     public static function textarea ($attrs) {
-        $text = self::extract($attrs, '-value');
+        $text = self::extract($attrs, 'value');
         self::readInput($attrs, $text);
         return self::tag('textarea', $attrs, (string)$text);
     }
 
     public static function checkbox ($attrs) {
-        $input = null;
+        $value = self::take($attrs, 'value', 'on');
         if (self::readInput($attrs, $input) and !is_null($input)) {
             if (!strlen($input)) {
                 unset($attrs['checked']);
             }
-            else if ($input === self::take($attrs, 'value', 'on')) {
+            else if ($input === $value) {
                 $attrs['checked'] = true;
             }
             else {
-                trigger_error("'$input' != '$attrs[value]'");
+                trigger_error("'$input' != '$value'");
             }
         }
         empty($attrs['checked'])
@@ -587,8 +587,8 @@ class AIIXForm extends AIIXData
     }
 
     public static function select ($attrs) {
-        $input = self::take($attrs, '-value');
-        self::readInput($attrs, $input);
+        $selected = self::extract($attrs, 'value');
+        self::readInput($attrs, $selected);
         $options = self::required($attrs, "-options".self::$form->mod);
         if (is_scalar($options)) $options = explode('||', $options);
         $html = self::$form->EOT;
@@ -602,8 +602,8 @@ class AIIXForm extends AIIXData
             }
             settype($val, 'string');
             if ($val === "''") $val = '';
-            if (is_array($input) && array_search($val, $input) !== false
-            ||  $input == $val) {
+            if (is_array($selected) && array_search($val, $selected) !== false
+            ||  $selected == $val) {
                 $data['selected'] = 'selected';
             }
             else {
