@@ -338,7 +338,7 @@ class AIIXForm extends AIIXData
     }
 
     private static function callValidator ($callback, $path, &$filtered, $args) {
-        if (is_scalar($filtered)) {
+        if (is_scalar($filtered) || is_null($filtered)) {
             call_user_func($callback, $path, $filtered, $args);
         }
         else foreach ($filtered as $idx => &$value) {//!!!
@@ -464,6 +464,18 @@ class AIIXForm extends AIIXData
             join('_', $suffix) : str_replace('/', '_', $suffix));
     }
 
+    private static $translate;
+
+    public static function translator ($callable = null) {
+        if (!isset($callable)) return self::$translate;
+        self::$translate = is_callable($callable) ? $callable : null;
+    }
+
+    public static function translate ($text, $context = null) {
+        return empty(self::$translate) ? $text :
+            call_user_func(self::$translate, $text, $context);
+    }
+
     public static function label ($id) {
         $attrs  = self::attrs($id);
         if (self::take($attrs, '-control') == 'hidden') return null;
@@ -476,9 +488,9 @@ class AIIXForm extends AIIXData
         is_array($label) // check for linked label
         and $ldata = array_merge((array)$ldata, $label)
         and $label = self::extract($ldata, "-text$suffix".self::$form->mod);
-        strlen($label) or $label = $attrs['id'];
+        strlen($label) or $label = $id;
         $ldata['for'] = $for; // link label to control
-        return self::tag('label', $ldata, $label);
+        return self::tag('label', $ldata, self::translate($label, $id));
     }
 
     /**
