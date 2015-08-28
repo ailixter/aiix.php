@@ -466,8 +466,7 @@ class AIIXForm extends AIIXData
 
     private static $translate;
 
-    public static function translator ($callable = null) {
-        if (!isset($callable)) return self::$translate;
+    public static function setTranslator ($callable = null) {
         self::$translate = is_callable($callable) ? $callable : null;
     }
 
