@@ -100,7 +100,7 @@ class AIIXForm extends AIIXData
         return addcslashes(self::$form->get($path), "\0..\37\'\"");
     }
 
-    public static function controls ($callback = null) {
+    protected static function controls ($callback = null) {
         return array_filter(self::$form->data, $callback ? //???
             $callback : array(__class__, 'isControl'));
     }
@@ -124,7 +124,7 @@ class AIIXForm extends AIIXData
             && empty($attrs['-dont-enumerate']);
     }
 
-    public static function fieldset ($fset) {
+    protected static function fieldset ($fset) {
         $result = array();
         foreach (self::fieldsetIDs($fset) as $id) {
             $result[$id] = self::$form[$id];
