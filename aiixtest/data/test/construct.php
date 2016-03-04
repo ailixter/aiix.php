@@ -8,7 +8,7 @@ $data1 = new AIIXData($_array);
 $data2 = new AIIXData($_array, true);
 $data3 = new AIIXData($_array, array('@b' => 'pool'));
 
-return $this->is_true(
+return AIIXTest::is_true(
     $data1['a']['y']    === '@b',
     $data2['a']['y'][0] === 'zero',
     $data3['a']['y']    === 'pool'

@@ -21,7 +21,7 @@ $d1->set(' multi word / key ', 'querty');
 
 //echo $d1->get('d/xyz/0');
 
-return $this->is_true(
+return AIIXTest::is_true(
     AIIXData::getp($v1, 'c')        === true,
     $d1->get('c')                   === true,
     AIIXData::getp($v1, 'd/xyz/0')  === 'aiix',

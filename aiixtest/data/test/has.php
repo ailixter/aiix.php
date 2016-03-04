@@ -11,7 +11,7 @@ $v6 = $_data->has('a/u/z');
 
 $v7 = $_data->has(' a / x ');
 
-return $this->is_true(
+return AIIXTest::is_true(
     $v3, $v4, $v3, $v4, $v7,
     !$v5, !$v6
 );
