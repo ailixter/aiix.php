@@ -2,7 +2,7 @@
 
 ```php
 
-$data = new AIIXdata($array);
+$data = new \AIIX\Data($array);
 $data->set('key1/key2', 'value1')->set('key3', 'value2');
 $value = $data->get('key1/key2', 'default');
 
@@ -10,12 +10,12 @@ $value = $data->get('key1/key2', 'default');
 
 ```php
 
-AIIXForm::create($formdata);
+\AIIX\Form::create($formdata);
 
 ----------------------------
 
-echo AIIXForm::label('firstname');
-echo AIIXForm::control('firstname');
+echo \AIIX\Form::label('firstname');
+echo \AIIX\Form::control('firstname');
 
 ```
 
