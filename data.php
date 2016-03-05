@@ -1,13 +1,13 @@
-<?php
+<?php namespace AIIX;
 
 /*
- * (C) 2015, AII (Alexey Ilyin).
+ * (C) 2016, AII (Alexey Ilyin).
  */
 
 require_once __dir__.'/object.php';
 
-class AIIXData extends AIIXObject
-    implements Countable, Iterator, ArrayAccess
+class Data extends Object
+    implements \Countable, \Iterator, \ArrayAccess
 {
     protected $data, $ts = '/';
 

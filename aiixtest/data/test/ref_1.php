@@ -1,12 +1,12 @@
 <?php
 
 $v1 = $_array;
-$d1 = new AIIXData($v1, true);
+$d1 = new \AIIX\Data($v1, true);
 
-$v2 =& AIIXData::refp($v1, '@b');
+$v2 =& \AIIX\Data::refp($v1, '@b');
 $v3 =& $d1->ref('@b');
 
-$v4 =& AIIXData::refp($v1, 'a/x');
+$v4 =& \AIIX\Data::refp($v1, 'a/x');
 $v5 =& $d1->ref('a/x');
 
 $v6 =& $d1->ref('a/u/i');

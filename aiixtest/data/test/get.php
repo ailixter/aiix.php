@@ -2,10 +2,10 @@
 
 $v  = $_data->get();
 
-$v1 = AIIXData::getp($_array, 'a');
+$v1 = \AIIX\Data::getp($_array, 'a');
 $v2 = $_data->get('a');
 
-$v3 = AIIXData::getp($_array, 'a/x');
+$v3 = \AIIX\Data::getp($_array, 'a/x');
 $v4 = $_data->get('a/x');
 
 $v5 = $_data->get('a/u', 456);

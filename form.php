@@ -1,7 +1,12 @@
-<?php
+<?php namespace AIIX;
+
+/*
+ * (C) 2016, AII (Alexey Ilyin).
+ */
+
 require_once __dir__.'/data.php';
 
-class AIIXInput extends AIIXData
+class Input extends Data
 {
     public function __construct (array &$data) {
         parent::__construct(array(), false);
@@ -22,7 +27,7 @@ class AIIXInput extends AIIXData
     }
 }
 
-class AIIXForm extends AIIXData
+class Form extends Data
 {
     /** Options. */
     protected $EOT      = "\n",
@@ -50,17 +55,17 @@ class AIIXForm extends AIIXData
      * AIIXForm::choose(new MyAIIXForm($data, new AIIXInput($_POST), '.ru');
      * </code>
      * @param array $data
-     * @param AIIXInput $input
+     * @param Input $input
      * @param string $mod : modificator, i.e. language - '.ru'
      */
-    public function __construct (array $data, AIIXInput $input, $mod=null) {
+    public function __construct (array $data, Input $input, $mod=null) {
         $this->EOT      = self::extract($data, '-EOT',      $this->EOT);
         $this->CANCEL   = self::extract($data, '-CANCEL',   $this->CANCEL);
         $this->DEFTYPE  = self::extract($data, '-DEFTYPE',  $this->DEFTYPE);
         parent::__construct($data, true);
         $this->input    = $input;
-        $this->output   = new AIIXData;
-        $this->alerts   = new AIIXData;
+        $this->output   = new Data;
+        $this->alerts   = new Data;
         $this->mod      = $mod;
     }
 
@@ -73,12 +78,12 @@ class AIIXForm extends AIIXData
      * @param  string $mod
      * @param  mixed  $fkey  : null | (scalar) specific form key
      * @param  string $class : form class
-     * @return AIIXForm
+     * @return Form
      */
     public static function create (array $data,
-        $input=null, $mod=null, $fkey=null, $class='AIIXForm')
+        $input=null, $mod=null, $fkey=null, $class='\AIIX\Form')
     {
-        $form = new $class($data, $input ? $input : new AIIXInput($_POST), $mod);
+        $form = new $class($data, $input ? $input : new Input($_POST), $mod);
         return isset($fkey) ?
             self::choose(self::$forms[$fkey] = $form) :
             self::choose(self::$forms[] = $form);
@@ -87,11 +92,11 @@ class AIIXForm extends AIIXData
     /**
      *
      * @param  mixed $mix : AIIXForm | (scalar) specific form key
-     * @return AIIXForm
+     * @return Form
      */
     public static function choose ($mix = null) {
         isset($mix)
-        and self::$form = $mix instanceof AIIXForm ?
+        and self::$form = $mix instanceof Form ?
             $mix : self::required(self::$forms, $mix);
         return self::$form;
     }
@@ -313,7 +318,7 @@ class AIIXForm extends AIIXData
     public static function validateAll ($ids, $controller = null) {
         $failed = 0;//TODO use alerted() ???
         foreach ($ids as $id) {
-            AIIXForm::validate($id, $controller) or ++$failed;
+            Form::validate($id, $controller) or ++$failed;
         }
         return !$failed;
     }

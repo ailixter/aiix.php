@@ -1,6 +1,6 @@
 <?php
 
-class Test extends AIIXObject {
+class Test extends \AIIX\Object {
     protected $prop = 123;
     protected function _get_property ($prop) {
         return $this->{$prop};

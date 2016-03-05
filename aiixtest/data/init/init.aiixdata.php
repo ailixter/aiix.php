@@ -17,5 +17,5 @@ $_array = array(
     )
 );
 
-$_data = new AIIXData($_array, true);
+$_data = new \AIIX\Data($_array, true);
 

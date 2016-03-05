@@ -1,2 +1,5 @@
 /nbproject
 /aiixtest/data/.cache
+
+/vendor/
+/Doxyfile

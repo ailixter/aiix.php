@@ -1,10 +1,10 @@
-<?php
+<?php namespace AIIX;
 
 /*
- * (C) 2015, AII (Alexey Ilyin).
+ * (C) 2016, AII (Alexey Ilyin).
  */
 
-class AIIXObject
+class Object
 {
 
     public function __get ($prop) {

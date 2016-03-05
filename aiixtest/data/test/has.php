@@ -1,9 +1,9 @@
 <?php
 
-$v1 = AIIXData::hasp($_array, 'a');
+$v1 = \AIIX\Data::hasp($_array, 'a');
 $v2 = $_data->has('a');
 
-$v3 = AIIXData::hasp($_array, 'a/x');
+$v3 = \AIIX\Data::hasp($_array, 'a/x');
 $v4 = $_data->has('a/x');
 
 $v5 = $_data->has('a/u');

@@ -1,0 +1,22 @@
+{
+    "name": "ailixter/aiix",
+    "description": "Object, Data and Form for easier life",
+    "keywords": ["data", "object", "form"],
+    "type": "library",
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "Alexey ILYIN",
+            "email": "ailixter@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AIIX\\": ""
+        }
+    },
+    "suggest": {
+        "ailixter/aiixtest": "for testing"
+    }
+}
