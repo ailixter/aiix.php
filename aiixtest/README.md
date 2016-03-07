@@ -1,6 +1,6 @@
 #  aiixtest
 
-## php test snippets runner
+see: [php test snippets runner](https://github.com/ailixter/aiixtest)
 
 Given
 ```
