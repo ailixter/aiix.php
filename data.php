@@ -4,8 +4,8 @@
  * (C) 2016, AII (Alexey Ilyin).
  */
 
-require_once __dir__.'/object.php';
-
+if (class_exists('\AIIX\Data', false)) return 1;
+require __dir__.'/object.php';
 class Data extends Object
     implements \Countable, \Iterator, \ArrayAccess
 {

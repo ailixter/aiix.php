@@ -4,8 +4,8 @@
  * (C) 2016, AII (Alexey Ilyin).
  */
 
-require_once __dir__.'/data.php';
-
+if (class_exists('\AIIX\Form', false)) return 1;
+require __dir__.'/data.php';
 class Input extends Data
 {
     public function __construct (array &$data) {

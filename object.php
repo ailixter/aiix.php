@@ -3,7 +3,7 @@
 /*
  * (C) 2016, AII (Alexey Ilyin).
  */
-
+if (class_exists('\AIIX\Object', false)) return 1;
 class Object
 {
 
