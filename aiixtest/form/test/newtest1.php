@@ -15,8 +15,8 @@ echo \AIIX\Form::control('comment.1'); // post data provided
 echo \AIIX\Form::checkbox(\AIIX\Form::attrs('c'));
 echo \AIIX\Form::checkbox(\AIIX\Form::attrs('c1')); // out of formdata, no post data
 
-for ($i = 1; $i <= 4; ++$i) {
+for ($_i = 1; $_i <= 4; ++$_i) {
     echo "\n";
-    echo \AIIX\Form::control("checkbox$i.0"); // no post data
-    echo \AIIX\Form::control("checkbox$i.1"); // post data provided
+    echo \AIIX\Form::control("checkbox$_i.0"); // no post data
+    echo \AIIX\Form::control("checkbox$_i.1"); // post data provided
 }

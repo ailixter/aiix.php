@@ -397,6 +397,16 @@ class Form extends Data
         $this->checkError($filtered != $arg, $path, $arg, 'is');
     }
 
+    protected function validate_regexp ($path, $filtered, $regexp) {
+        $result = preg_match($regexp, $filtered);
+        $this->checkError(!!$result, $path, $regexp, 'mismatch');
+    }
+
+    protected function validate_email ($path, $filtered, $arg) {
+        $result = filter_var($filtered, FILTER_VALIDATE_EMAIL);
+        $this->checkError($result !== false, $path, $arg, 'not email');
+    }
+
     //---=====[ HTML ]=====---//
 
     /**

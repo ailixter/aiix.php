@@ -12,19 +12,19 @@ class Custom {
 
 $valid = array();
 
-for ($i = 0; $i <= 2; ++$i) {
-    $valid["$i.0"] = \AIIX\Form::validate("validate$i.0");
-    $valid["$i.1"] = \AIIX\Form::validate("validate$i.1");
+for ($_i = 0; $_i <= 2; ++$_i) {
+    $valid["$_i.0"] = \AIIX\Form::validate("validate$_i.0");
+    $valid["$_i.1"] = \AIIX\Form::validate("validate$_i.1");
 }
 
 $controller = new Custom;
-for (; $i <= 5; ++$i) {
-    $valid["$i.0"] = \AIIX\Form::validate("validate$i.0", $controller);
-    $valid["$i.1"] = \AIIX\Form::validate("validate$i.1", $controller);
+for (; $_i <= 5; ++$_i) {
+    $valid["$_i.0"] = \AIIX\Form::validate("validate$_i.0", $controller);
+    $valid["$_i.1"] = \AIIX\Form::validate("validate$_i.1", $controller);
 }
 
 $message = array();
-for ($i = 0; $i <= 5; ++$i) {
-    $message["$i.0"] = \AIIX\Form::message("validate$i.0");
-    $message["$i.1"] = \AIIX\Form::message("validate$i.1");
+for ($_i = 0; $_i <= 5; ++$_i) {
+    $message["$_i.0"] = \AIIX\Form::message("validate$_i.0");
+    $message["$_i.1"] = \AIIX\Form::message("validate$_i.1");
 }

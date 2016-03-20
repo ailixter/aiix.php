@@ -1,5 +1,5 @@
 <?php
 
-for ($i = 1; $i <= 5; ++$i) {
-    echo \AIIX\Form::label("labeled$i");
+for ($_i = 1; $_i <= 5; ++$_i) {
+    echo \AIIX\Form::label("labeled$_i");
 }
