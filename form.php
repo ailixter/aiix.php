@@ -4,8 +4,8 @@
  * (C) 2016, AII (Alexey Ilyin).
  */
 
-if (class_exists('\AIIX\Form', false)) return 1;
-require __dir__.'/data.php';
+class_exists('\AIIX\Data', false)
+or require __dir__.'/Data.php';
 class Input extends Data
 {
     public function __construct (array &$data) {
@@ -474,7 +474,7 @@ class Form extends Data
     public static function setTranslator ($callable = null) {
         self::$translate = is_callable($callable) ? $callable : null;
     }
-
+    //TODO use for each attribute (title, placeholder,...)
     public static function translate ($text, $context = null) {
         return empty(self::$translate) ? $text :
             call_user_func(self::$translate, $text, $context);
